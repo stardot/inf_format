@@ -10,7 +10,7 @@ Syntax specifications are as per [RFC 2234](https://www.rfc-editor.org/rfc/rfc22
 
 # What is the .inf format?
 
-As well as the actual file data or directory contents, Acorn systems maintained some amount of additional metadata associated with the file or directory. There's nowhere particularly convenient to store this stuff on modern systems, and as an additional annoyance, the Acorn file naming rules have always in the been a bit different from everything else.
+As well as the actual file data or directory contents, Acorn systems maintained some amount of additional metadata associated with the file or directory. There's nowhere particularly convenient to store this stuff on modern systems, and as an additional annoyance, the Acorn file naming rules have always been a bit different from everything else.
 
 The .inf format was created by Wouter Scholten to solve these problems. Each Acorn file is stored as 2 files on the modern system: one file containing the actual file contents, an opaque sequence of bytes, and a second structured file holding the Acorn-specific metadata and original Acorn name.
 
@@ -20,7 +20,7 @@ The .inf format has been well used over the years, and has grown some extensions
 
 Goals:
 
-- specify a synax that accepts all (or as very nearly all as possible...) existing files
+- specify a synax that matches all (or as very nearly all as possible...) existing files
 - extend the format to cover previously-underspecified cases
 - try not to make it _too_ much effort to update existing consumers to support it
 - ensure metadata is perfectly round-trippable, at least in principle
@@ -32,7 +32,7 @@ Non-goals:
 - clean sheet redesign
 - restrict Acorn file/directory naming (the names are opaque sequences of bytes)
 
-For existing unmodified producers: the updated syntax it defines attempts to be one that will accept very nearly all existing .inf files. Problem cases are largely theoretical. Existing .inf file producers will therefore automatically already be generally conforming in practice.
+For existing unmodified producers: the updated syntax it defines attempts to be one that will accept very nearly all existing .inf files. Problem cases are rare enough they can be fixed by hand. Existing .inf file producers will therefore automatically already be generally conforming in practice.
 
 For existing unmodified consumers: existing consumers are inevitably limited to accepting whatever they are able to interpret. But since they interpret existing .inf files, as per the above goal, the syntax they accept will be conformant (even if they can't accept all conforming .inf files).
 
@@ -48,7 +48,7 @@ Consuming .inf files on an Acorn system is intended to be feasible, even if 8-bi
 
 To represent an Acorn file/directory on a modern system (henceforth described as a PC, but it could be anything), the .inf format uses 2 directory entries on the PC.
 
-One holds the file/directory contents. For an Acorn file, it's a file, the so-called data file, holding the contents of the file as it would be seen on the Acorn system; for an Acorn directory, it's a directory, the so-called PC directory, containing any further PC directory entries corresponding to Acorn files/directories inside the corresponding Acorn directory (and so on, possibly recursively).
+One holds the file/directory contents. For an Acorn file, it's a file, the so-called data file, holding the contents of the file as it would be seen on the Acorn system; for an Acorn directory, it's a directory, the so-called PC directory, containing any further PC directory entries corresponding to Acorn files/directories under the corresponding Acorn directory (and so on, possibly recursively).
 
 The other, always a file in both cases, is the attribute file, holding the Acorn-specific metadata, including the Acorn name. 
 
@@ -85,9 +85,9 @@ The naming of the PC directory entries is up to the producer. Most modern system
 
 The Acorn file/directory name is stored in the attribute file, so the PC directory entry naming doesn't actually matter, but as a rule of thumb producers should try to reproduce the Acorn name as best they can. This makes life easier for the person using the tool.
 
-(The annoying Windows file name restrictions are worth bearing in mind: https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file. Shell annoyances are also be worth thinking about: names with `%` or `^` in are annoying to deal with in the Windows command prompt; Names with `$` (not exactly uncommon on Acorn systems...) can be a pain in POSIX-type shells. And so on.)
+(The annoying Windows file name restrictions are worth bearing in mind: https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file. Shell annoyances are also be worth thinking about: names with `%` or `^` in are annoying to deal with in the Windows command prompt; names with `$` (not exactly uncommon on Acorn systems...) can be a pain in POSIX-type shells. And so on.)
 
-Producers SHOULD bear in mind the possibility of creating odd loops of `.inf` names, such as the `ELITE.inf.inf` and `TEST.inf` cases above, and SHOULD NOT emit them. (Rationale: depending how the consuming tool searched for files, it may get confused.)
+Producers SHOULD bear in mind the possibility of creating odd loops of `.inf` names, such as the `ELITE.inf.inf` and `TEST.inf` cases above, and SHOULD NOT emit them. (Rationale: depending how the consuming tool searches for files, it may get confused.)
 
 ## Finding data files/PC directories by Acorn name
 
@@ -129,7 +129,7 @@ There are no specific size limits to the attribute file, which, in particular, m
 
 ### Syntax elements in the attribute file
 
-The attribute file consists of one line, terminated by end of file or end of line. (For the definition of `LF`, etc., see [RFC 2234 section 6.1](https://www.rfc-editor.org/rfc/rfc2234#section-6.1).
+The attribute file consists of one line, terminated by end of file or end of line. (For the definition of `LF`, etc., see [RFC 2234 section 6.1](https://www.rfc-editor.org/rfc/rfc2234#section-6.1).)
 
     eol = LF / CR / (CR LF)
 
@@ -141,7 +141,7 @@ Fields are separated with runs of white space.
 
     spaces = 1*(HTAB / SP)
 	
-A string field consists of a run of printable non-space 7-bit ASCII characters starting with a character other than a `DQUOTE` (`"`), or a run of printable 7-bit ASCII characters surrounded by `DQUOTE` characters. See the string fields section below.
+A string field consists of a run of printable non-space 7-bit ASCII characters starting with a character other than a `DQUOTE` (`"`), or a run of printable 7-bit ASCII characters surrounded by `DQUOTE` characters. See the [string fields section](#string-fields) below.
 
     unquoted_string_field = (%x21 / %x23-7E) *(%x21-7E)
 	quoted_string_field = DQUOTE *(%x20-7E) DQUOTE
