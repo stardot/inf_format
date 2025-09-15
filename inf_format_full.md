@@ -152,14 +152,14 @@ A hex field consists of a run of hex digits. Lower case and upper case are equiv
     ALLHEXDIG = DIGIT / "A"-"F" / "a"-"f"
     hex_field = 1*(ALLHEXDIG)
 	
-A generic extra info field is of the form KEY= or KEY=VALUE, where KEY is an alphanumeric string and VALUE (if present) is a string field. (If VALUE is not present, the value is an empty string.)
+A generic extra info field is of the form `KEY=` or `KEY=VALUE`, where `KEY` is an alphanumeric string and `VALUE` (if present) is a `string_field`. (If `VALUE` is not present, the value is an empty string.)
 
 	extra_info_field_with_no_value = 1*(ALPHA / DIGIT / "_") "="
-    extra_info_field_with_value = 1*(ALPHA / DIGIT / "_") "=" string_value
+    extra_info_field_with_value = 1*(ALPHA / DIGIT / "_") "=" string_fields
 	
-There is one exceptional extra info field, `CRC` that may have one single extra space after the `=` and before the value. There are .inf files with this syntax in old The BBC Lives! collection, possibly due to a bug in early iterations of tools. This deprecated version of the CRC field gets its own completely unique irregular special syntax:
+There is one exceptional extra info field, `CRC` that may have one single extra `SP` after the `=` and before the value. There are .inf files with this syntax in the The BBC Lives! collection, possibly due to a bug in early iterations of tools. This deprecated version of the CRC field gets its own completely unique irregular special syntax:
 
-    deprecated_crc_extra_info_field = "CRC= " hex_field
+    deprecated_crc_extra_info_field = "CRC=" SP hex_field
 	
 The syntax for each extra info field is then:
 
@@ -173,11 +173,11 @@ Producers MUST NOT emit `CRC` extra info fields with this syntax. (Rationale: it
 	
 Keys starting with `_` are syntactically valid, but reserved for future expansion in some unspecified way.
 	
-The access field is a symbolic string, upper case or lower case, or `Locked`, or `LOCKED`.
+The access field is a sequence of Acorn attribute chars, upper case or lower case, or `Locked`, or `LOCKED`.
 
     access_field = "LOCKED" / "Locked" / 1*("E" / "e" / "L" / "l" / "W" / "w" / "R" / "r" / "D" / "d")
 	
-The access field syntax is not always obviously non-hex. Tools MAY interpret `E` or `D` (or their lower-case equivalents) as symbolic. (Rationale: it's guesswork and the spec can't enforce anything.)
+The access field syntax is not always unambiguously non-hex. If given the choice between `hex_field` and `access_field`, tools SHOULD interpret `E` or `D` (or their lower-case equivalents) as matching `access_field`. (Rationale: it's always guesswork, and it'll probably be 2 hex digits if output as a byte. This is probably the least bad way to do it.)
 
 If it otherwise looks like hex, it SHOULD be treated as hex. (Rationale: Seems safest, but, as above regarding the guesswork aspect. `ED` and `DE` aren't valid Acorn attributes, nor are duplicated letters such as the `DDDDDD` in Hypersports.)
 
@@ -242,7 +242,7 @@ Syntax 3 allows a mandatory access field only.
 
 Taking these fields in order:
 
-`TAPE`, if specified, indicates that this file came from a cassette tape. (Note that `TAPE` is not a string field, and so it must be interpreted verbatim.) This doesn't seem to have seen much use, and it's syntactically ambiguous, so it's deprecated. Consumers MUST check for this and treat the following field as file name if present. (Rationale: it's in Wouter's spec.)
+`TAPE`, if specified, indicates that this file came from a cassette tape. (Note that `TAPE` is not a string field, and only matches the literal value.) This doesn't seem to have seen much use, and it's syntactically kind of ambiguous, so it's deprecated. Consumers MUST check for this and treat the following field as file name if present. (Rationale: it's in Wouter's spec.)
 
 Producers MUST NOT emit this. (Rationale: it's deprecated.) 
 
@@ -285,9 +285,11 @@ The load, exec and length fields are not very useful for directories, but are ne
 
 Producers MUST NOT emit this. (Rationale: it's deprecated.)
 
-Consumers MUST stop reading at end of line (first 13 or 10 byte), or end of file. (Rationale: subsequent lines are reserved for future expansion.)
+Consumers MUST stop reading at end of line (first `LF` or `CR`), or end of file. (Rationale: subsequent lines are reserved for future expansion.)
 
-Producers SHOULD emit syntax 1 with the access value specifed as a hex value. (Rationale: syntax 1 supports the widest range of stuff. The access value as hex avoids any ambiguity about whether it's a DFS-style or ADFS-style access value.)
+Producers SHOULD emit syntax 1. (Rationale: syntax 1 supports the widest range of stuff.)
+
+Producers SHOULD emit access bytes as 2-digit hex values. (Rationale: avoids any ambiguity about whether it's a DFS-style or ADFS-style access value.)
 
 ### The access byte
 
@@ -316,15 +318,15 @@ Producers SHOULD emit an access byte rather than a DFS-style access field, but, 
 
 Note that there is no access byte bit for `D` or `d`. If the corresponding PC directory entry is a directory, the Acorn directory entry is a directory; and if the corresponding PC directory entry is a file, the Acorn directory is a file.
 
-If the access is specified symbolically, consumers SHOULD NOT use it to check that the directory entry is of the right type. (Rationale: make symbolic and non-symbolic access bytes symmetrical.)
+If the access is specified symbolically, consumers SHOULD NOT use it to check that the directory entry is of the right type. (Rationale: make symbolic and non-symbolic access bytes symmetrical. Maybe it's arguable though.)
 
 If specifying the access symbolically, producers SHOULD NOT emit `D` if the entry is a directory. (Rationale: same.)
 
-### What else?
+### No attribute file?
 
-Consumers may wish to also handle files/directories that don't have associated attribute files, and there's nothing to say they can't. As no PC file name encoding is specified, translating the corresponding PC names to Acorn names would be up to each tool.
+Consumers MAY treat PC files/directories that don't have associated attribute files as representing Acorn files/directories. As no PC file name encoding is specified, translating the corresponding PC names to Acorn names would be up to each tool, as would be the values for any of the Acorn attributes.
 
-Producers could avoid writing an attribute file when possible, but in practice they probably SHOULD, as the PC file name encoding is not specified and this wil ensure the Acorn name will transfer to other tools.
+Producers could avoid writing an attribute file, but in practice they probably SHOULD, as the PC file name encoding is not specified and this wil ensure the Acorn name will transfer to other tools.
 
 ### Known extra info fields
 
@@ -361,8 +363,6 @@ Auto-boot option for the `!BOOT` file, found in its attribute file. Values as ab
 #### `DIRTITLE`, `TITLE`
 
 Title of the directory.
-
-Producers SHOULD try to round-trip this.
 
 #### `DATETIME`
 
