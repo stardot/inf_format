@@ -3,6 +3,10 @@ some loose ends.
 
 Discussion here: https://stardot.org.uk/forums/viewtopic.php?t=31577
 
+# Full proposal
+
+See [./inf_format_full.md](./inf_format_full.md).
+
 # `inf.py`
 
 Python 3 script that finds .inf files and tries to parse them. Point
