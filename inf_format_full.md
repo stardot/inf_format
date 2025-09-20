@@ -372,9 +372,15 @@ String value of the form `YYYYMMDDhhmmss`.
 
 TODO
 
+There's some in `inf.py` in the repository, but it's more of a sanity check for the syntax than necessarily something to be copied, let alone reused.
+
 # Test data
 
 TODO
+
+Set of .inf files, including some that should be considered invalid, and expected results for the valid ones. Creating the cases shouldn't be too hard but not sure offhand how to represent the expected data.
+
+JSON is easy to parse on modern systems, but insists on UTF-8, which might be a blocker for some tests. Also annoying to parse on the 8-bits, which is a bit mean if this spec is hoping to make 8-bit implementations feasible.
 
 # How existing tools arrange files
 
