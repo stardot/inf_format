@@ -316,7 +316,7 @@ Consumers MAY treat the DFS Locked state as implying other bits are set. (Ration
 
 Producers SHOULD emit an access byte rather than a DFS-style access field, but, if they must, they MAY treat other bits set as implying the DFS-style access state is `Locked`. (Rationale: same.)
 
-Note that there is no access byte bit for `D` or `d`. If the corresponding PC directory entry is a directory, the Acorn directory entry is a directory; and if the corresponding PC directory entry is a file, the Acorn directory is a file.
+Note that there is no access byte bit for `D` or `d`. If the corresponding PC directory entry is a directory, the Acorn directory entry is a directory; and if the corresponding PC directory entry is a file, the Acorn directory entry is a file.
 
 If the access is specified symbolically, consumers SHOULD NOT use it to check that the directory entry is of the right type. (Rationale: make symbolic and non-symbolic access bytes symmetrical. Maybe it's arguable though.)
 
