@@ -144,7 +144,7 @@ Fields are separated with runs of white space.
 A string field consists of a run of printable non-space 7-bit ASCII characters starting with a character other than a `DQUOTE` (`"`), or a run of printable 7-bit ASCII characters surrounded by `DQUOTE` characters. See the [string fields section](#string-fields) below.
 
     unquoted_string_field = (%x21 / %x23-7E) *(%x21-7E)
-	quoted_string_field = DQUOTE *(%x20-7E) DQUOTE
+	quoted_string_field = DQUOTE *(%x20-21 / %x23-7E) DQUOTE
 	string_field = unquoted_string_field / quoted_string_field
 	
 A hex field consists of a run of hex digits. Lower case and upper case are equivalent.
