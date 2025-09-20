@@ -416,6 +416,10 @@ Keys starting with `_` are deliberately reserved for additional future expansion
 
 I got bored of going back and forth in my mind without being able to come up with a decision.
 
+## Exhaustive search
+
+Should this be a MUST? But I was thinking, I'd quite like to leave open (pending discussion) the option of having an empty name (`""`) in the .INF file, meaning the PC name is authoritative. But maybe that'd be silly and we should leave that option for another day.
+
 ## Load/exec/length for directories
 
 Feels like consumers SHOULD ignore these - or would there be something useful in them??
