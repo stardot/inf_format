@@ -155,7 +155,7 @@ A hex field consists of a run of hex digits. Lower case and upper case are equiv
 A generic extra info field is of the form `KEY=` or `KEY=VALUE`, where `KEY` is an alphanumeric string and `VALUE` (if present) is a `string_field`. (If `VALUE` is not present, the value is an empty string.)
 
 	extra_info_field_with_no_value = 1*(ALPHA / DIGIT / "_") "="
-    extra_info_field_with_value = 1*(ALPHA / DIGIT / "_") "=" string_fields
+    extra_info_field_with_value = 1*(ALPHA / DIGIT / "_") "=" string_field
 	
 There is one exceptional extra info field, `CRC` that may have one single extra `SP` after the `=` and before the value. There are .inf files with this syntax in the The BBC Lives! collection, possibly due to a bug in early iterations of tools. This deprecated version of the CRC field gets its own completely unique irregular special syntax:
 
