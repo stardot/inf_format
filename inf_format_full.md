@@ -394,7 +394,7 @@ The attribute file provides the DFS directory and name, e.g., `$.!BOOT` or `B.LO
 
 The DFS is not hierarchical.
 
-Disc Image Manager produces an attribute file for the DFS drive's PC directory, which is probably a good idea.
+Disc Image Manager produces an attribute file for the DFS drive's PC directory, which is probably a good idea, as it's somewhere sensible to store the drive title and boot option. (You can use the `OPT4` extra info value in the `!BOOT` file, but now the value can only be changed when `!BOOT` exists, which isn't how the DFS works.)
 
 ## ADFS-style arrangement
 
@@ -430,11 +430,11 @@ Consumers MAY check - after all, it's there! But SHOULD they?
 
 ## Access byte stuff
 
-This bit is pretty bad.
+Not happy about this bit, but DFS and ADFS just don't work the same way.
 
 ## `OPT4=`
 
-I don't like having this attached to `!BOOT` specifically, but there's no directories in DFS (from the .inf point of view) - so where else should it go?
+I don't like having this attached to `!BOOT` specifically, but there's no directories in DFS (from the .inf point of view) - so where else should it go? BeebLink does its own thing. I think the Disc Image Manager idea of maintaining a .inf for the drive is tidier.
 
 # More suggestions please
 
